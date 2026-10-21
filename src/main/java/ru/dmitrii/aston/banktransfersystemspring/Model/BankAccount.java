@@ -28,12 +28,14 @@ public class BankAccount {
     @Column (name = "currency")
     String currency;
 
-    public int getId() {
-        return id;
+    public BankAccount(String accountHolder, BigDecimal balance, String currency) {
+        this.accountHolder = accountHolder;
+        this.balance = balance;
+        this.currency = currency;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
     public String getAccountHolder() {
