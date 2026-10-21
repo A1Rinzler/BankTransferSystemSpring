@@ -1,5 +1,6 @@
 package ru.dmitrii.aston.banktransfersystemspring.Service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
 import ru.dmitrii.aston.banktransfersystemspring.Repository.BankAccountRepository;
@@ -12,6 +13,7 @@ import java.util.Optional;
  * @created : 21.10.2026
  **/
 
+@Service
 public class BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
