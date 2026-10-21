@@ -1,6 +1,7 @@
 package ru.dmitrii.aston.banktransfersystemspring.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
 
 /**
@@ -8,5 +9,6 @@ import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
  * @created : 21.10.2026
  **/
 
+@Repository
 public interface BankAccountRepository extends JpaRepository<BankAccount, Integer> {
 }
