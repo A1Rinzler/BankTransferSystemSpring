@@ -2,8 +2,10 @@ package ru.dmitrii.aston.banktransfersystemspring.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestTransferDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseBalanceDTO;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTransferDTO;
 import ru.dmitrii.aston.banktransfersystemspring.Service.BankAccountService;
 
 import java.math.BigDecimal;
@@ -33,6 +35,11 @@ public class BankTransferController {
     @PostMapping("/accounts")
     public ResponseAccountDTO createNewAccount(@RequestBody ResponseAccountDTO responseAccountDTO){
         return  bankAccountService.saveNewAccount(responseAccountDTO);
+    }
+
+    @PostMapping("/transactions")
+    public ResponseTransferDTO doTransfer(@RequestBody RequestTransferDTO requestTransferDTO){
+        return bankAccountService.transfer(requestTransferDTO);
     }
 
 }
