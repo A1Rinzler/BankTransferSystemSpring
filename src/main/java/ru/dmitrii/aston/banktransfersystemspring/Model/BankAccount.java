@@ -28,9 +28,9 @@ public class BankAccount {
     @Column (name = "currency")
     String currency;
 
-    public BankAccount(String accountHolder, BigDecimal balance, String currency) {
+    public BankAccount(String accountHolder, String currency) {
         this.accountHolder = accountHolder;
-        this.balance = balance;
+        this.balance = BigDecimal.ZERO;
         this.currency = currency;
     }
 
