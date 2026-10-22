@@ -60,16 +60,28 @@ public class BankAccountService {
         transferFrom.setBalance(transferFrom.getBalance().subtract(amount));
         transfetTo.setBalance(transfetTo.getBalance().add(amount));
 
-        Transaction transaction = new Transaction();
-        transaction.setFromAccount(transferFrom.getId());
-        transaction.setToAccount(transfetTo.getId());
-        transaction.setAmount(amount);
-        transaction.setStatus("completed");
+        int fromId = transferFrom.getId();
+        int toId = transfetTo.getId();
+
+        //над наверно какой-то emum сделать и выставлять статус оттуда, сделать проверку или наф, реши утром.
+        String transferStatus = "completed";
+
+        Transaction transaction = new Transaction(fromId, toId, amount,transferStatus);
+
+        //Transaction transaction1 = new Transaction(transferFrom.getId(), transfetTo.getId(), amount, "completed");
+
+
+//        Transaction transaction = new Transaction();
+//        transaction.setFromAccount(transferFrom.getId());
+//        transaction.setToAccount(transfetTo.getId());
+//        transaction.setAmount(amount);
+//        transaction.setStatus("completed");
 
         Transaction save = transactionRepository.save(transaction);
 
         return new ResponseTransferDTO(save.getId(), save.getStatus());
     }
+
 
 
 }
