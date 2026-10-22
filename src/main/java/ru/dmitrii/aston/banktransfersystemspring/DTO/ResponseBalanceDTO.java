@@ -8,11 +8,11 @@ import java.math.BigDecimal;
  **/
 
 
-public class GetBalanceDTO {
+public class ResponseBalanceDTO {
 
     private BigDecimal balance;
 
-    public GetBalanceDTO(BigDecimal balance) {
+    public ResponseBalanceDTO(BigDecimal balance) {
         this.balance = balance;
     }
 
