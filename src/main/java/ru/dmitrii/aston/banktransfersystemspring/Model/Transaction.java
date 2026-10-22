@@ -34,11 +34,11 @@ public class Transaction {
     @Column(name = "status")
     String status;
 
-    public Transaction(int fromAccount, int toAccount, BigDecimal amount, LocalDateTime timeStamp, String status) {
+    public Transaction(int fromAccount, int toAccount, BigDecimal amount, String status) {
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
         this.amount = amount;
-        this.timeStamp = timeStamp;
+        this.timeStamp = LocalDateTime.now();
         this.status = status;
     }
 
