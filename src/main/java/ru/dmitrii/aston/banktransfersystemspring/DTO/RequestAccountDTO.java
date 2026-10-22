@@ -7,14 +7,14 @@ import java.math.BigDecimal;
  * @created : 21.10.2026
  **/
 
-public class PostAccountDTO {
+public class RequestAccountDTO {
 
     String accountHolder;
 
 
     String currency;
 
-    public PostAccountDTO(String accountHolder, String currency) {
+    public RequestAccountDTO(String accountHolder, String currency) {
         this.accountHolder = accountHolder;
         this.currency = currency;
     }
