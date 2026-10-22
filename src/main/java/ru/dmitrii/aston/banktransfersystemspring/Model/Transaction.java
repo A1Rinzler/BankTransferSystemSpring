@@ -34,12 +34,16 @@ public class Transaction {
     @Column(name = "status")
     String status;
 
-    public int getId() {
-        return id;
+    public Transaction(int fromAccount, int toAccount, BigDecimal amount, LocalDateTime timeStamp, String status) {
+        this.fromAccount = fromAccount;
+        this.toAccount = toAccount;
+        this.amount = amount;
+        this.timeStamp = timeStamp;
+        this.status = status;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
     public int getFromAccount() {
