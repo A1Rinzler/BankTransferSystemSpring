@@ -1,7 +1,9 @@
 package ru.dmitrii.aston.banktransfersystemspring.Service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestTransferDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTransferDTO;
@@ -43,6 +45,7 @@ public class BankAccountService {
     @Transactional
     public BigDecimal getOwnerBalance(int id){
         Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(id);
+        //todo над переделать возвращать статус с ошибкой, а не просто текст
         if (bankAccountOptional.isEmpty()){
             throw new RuntimeException("Owner not found " + id);
         }
@@ -56,6 +59,10 @@ public class BankAccountService {
         BankAccount transfetTo = bankAccountRepository.findById(requestTransferDTO.getToAccount()).orElse(null);
 
         BigDecimal amount = requestTransferDTO.getAmount();
+
+        if (transferFrom.getBalance().compareTo(requestTransferDTO.getAmount()) < 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Недостаточно средств");
+        }
 
         transferFrom.setBalance(transferFrom.getBalance().subtract(amount));
         transfetTo.setBalance(transfetTo.getBalance().add(amount));
