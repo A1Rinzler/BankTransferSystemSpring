@@ -2,6 +2,8 @@ package ru.dmitrii.aston.banktransfersystemspring.Service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.GetAccountDTO;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.PostAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
 import ru.dmitrii.aston.banktransfersystemspring.Repository.BankAccountRepository;
 
@@ -20,6 +22,17 @@ public class BankAccountService {
 
     public BankAccountService(BankAccountRepository bankAccountRepository) {
         this.bankAccountRepository = bankAccountRepository;
+    }
+
+
+    @Transactional
+    public GetAccountDTO saveNewAccount(PostAccountDTO accountDTO){
+        BankAccount bankAccount = new BankAccount(accountDTO.getAccountHolder(), accountDTO.getCurrency());
+
+        BankAccount bankAccountSaved = bankAccountRepository.save(bankAccount);
+
+        return new GetAccountDTO(bankAccountSaved.getId(), bankAccountSaved.getAccountHolder(), bankAccountSaved.getBalance(), bankAccountSaved.getCurrency());
+
     }
 
     @Transactional
