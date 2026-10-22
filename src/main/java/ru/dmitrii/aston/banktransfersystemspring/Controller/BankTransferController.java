@@ -1,13 +1,10 @@
 package ru.dmitrii.aston.banktransfersystemspring.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.GetAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.GetBalanceDTO;
-import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.PostAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.Service.BankAccountService;
 
 import java.math.BigDecimal;
@@ -28,10 +25,15 @@ public class BankTransferController {
         this.bankAccountService = bankAccountService;
     }
 
-    @GetMapping("/balance{id}")
+    @GetMapping("/{id}/balance")
     public GetBalanceDTO getOwnerBalance(@PathVariable int id){
         BigDecimal balance = bankAccountService.getOwnerBalance(id);
         return new GetBalanceDTO(balance);
+    }
+
+    @PostMapping("/accounts")
+    public GetAccountDTO createNewAccount(@RequestBody PostAccountDTO postAccountDTO){
+        return  bankAccountService.saveNewAccount(postAccountDTO);
     }
 
 }
