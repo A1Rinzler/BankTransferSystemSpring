@@ -1,6 +1,7 @@
 package ru.dmitrii.aston.banktransfersystemspring.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestTransferDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
@@ -9,6 +10,7 @@ import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTransferDTO;
 import ru.dmitrii.aston.banktransfersystemspring.Service.BankAccountService;
 
 import java.math.BigDecimal;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author : Dmitrii Frolov, a.k.a. A1Rinzler
@@ -38,8 +40,9 @@ public class BankTransferController {
     }
 
     @PostMapping("/transactions")
-    public ResponseTransferDTO doTransfer(@RequestBody RequestTransferDTO requestTransferDTO){
-        return bankAccountService.transfer(requestTransferDTO);
+    public ResponseEntity<ResponseTransferDTO> doTransfer(@RequestBody RequestTransferDTO requestTransferDTO) throws ExecutionException, InterruptedException {
+        ResponseTransferDTO responseTransferDTO = bankAccountService.transfer(requestTransferDTO).get();
+        return ResponseEntity.ok(responseTransferDTO);
     }
 
 }

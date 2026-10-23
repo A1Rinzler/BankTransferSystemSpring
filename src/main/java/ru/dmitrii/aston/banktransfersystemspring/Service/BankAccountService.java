@@ -17,6 +17,7 @@ import ru.dmitrii.aston.banktransfersystemspring.Repository.TransactionRepositor
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author : Dmitrii Frolov, a.k.a. A1Rinzler
@@ -61,7 +62,7 @@ public class BankAccountService {
 
     @Async
     @Transactional
-    public ResponseTransferDTO transfer(RequestTransferDTO requestTransferDTO){
+    public CompletableFuture<ResponseTransferDTO> transfer(RequestTransferDTO requestTransferDTO){
         int idFrom = requestTransferDTO.getFromAccount();
         int idTo = requestTransferDTO.getToAccount();
         String transferStatus = "completed";
@@ -101,7 +102,8 @@ public class BankAccountService {
         //applicationEventPublisher.publishEvent(new TransferExistEvent(save.getId()));
         //asyncTransferService.asyncTransfer(save.getId());
 
-        return new ResponseTransferDTO(save.getId(), save.getStatus());
+        ResponseTransferDTO responseTransferDTO = new ResponseTransferDTO(save.getId(), save.getStatus());
+        return  CompletableFuture.completedFuture(responseTransferDTO);
     }
 
 
