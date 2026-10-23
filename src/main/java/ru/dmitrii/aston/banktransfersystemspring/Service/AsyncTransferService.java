@@ -43,7 +43,8 @@ public class AsyncTransferService {
         BigDecimal amount = transaction.getAmount();
 
         if (transferFrom.getBalance().compareTo(amount) < 0){
-            transaction.setStatus("failed");
+//            transaction.setStatus("failed");
+//            return;
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Недостаточно средств");
         }
 
@@ -52,5 +53,7 @@ public class AsyncTransferService {
 
         transaction.setStatus("completed");
     }
+
+
 
 }
