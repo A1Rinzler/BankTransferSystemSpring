@@ -7,9 +7,11 @@ import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestTransferDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseBalanceDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTransferDTO;
+import ru.dmitrii.aston.banktransfersystemspring.Model.Transaction;
 import ru.dmitrii.aston.banktransfersystemspring.Service.BankAccountService;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -43,6 +45,11 @@ public class BankTransferController {
     public ResponseEntity<ResponseTransferDTO> doTransfer(@RequestBody RequestTransferDTO requestTransferDTO) throws ExecutionException, InterruptedException {
         ResponseTransferDTO responseTransferDTO = bankAccountService.transfer(requestTransferDTO).get();
         return ResponseEntity.ok(responseTransferDTO);
+    }
+
+    @GetMapping("/transactions/{id}")
+    public List<Transaction> getHistory(@PathVariable int id){
+        return bankAccountService.getTransactionHistory(id);
     }
 
 }

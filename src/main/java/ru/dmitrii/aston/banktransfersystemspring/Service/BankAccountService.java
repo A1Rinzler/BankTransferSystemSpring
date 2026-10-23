@@ -16,6 +16,7 @@ import ru.dmitrii.aston.banktransfersystemspring.Repository.BankAccountRepositor
 import ru.dmitrii.aston.banktransfersystemspring.Repository.TransactionRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -106,6 +107,10 @@ public class BankAccountService {
         return  CompletableFuture.completedFuture(responseTransferDTO);
     }
 
+    @Transactional
+    public List<Transaction> getTransactionHistory(int id){
+        return transactionRepository.findByFromAccount(id);
+    }
 
 
 }
