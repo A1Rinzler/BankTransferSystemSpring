@@ -52,6 +52,7 @@ public class BankAccountService {
         return bankAccountOptional.get().getBalance();
     }
 
+    @Transactional
     public ResponseTransferDTO transfer(RequestTransferDTO requestTransferDTO){
 
         BankAccount transferFrom = bankAccountRepository.findById(requestTransferDTO.getFromAccount()).orElse(null);
