@@ -67,8 +67,8 @@ public class BankAccountService {
         int idTo = requestTransferDTO.getToAccount();
         String transferStatus = "completed";
 
-        BankAccount transferFrom = bankAccountRepository.findById(idFrom).orElseThrow(() -> new IllegalArgumentException("Нет такого владельца"));
-        BankAccount transfetTo = bankAccountRepository.findById(idTo).orElseThrow(() -> new IllegalArgumentException("Нет такого владельца"));
+        BankAccount transferFrom = bankAccountRepository.findById(idFrom).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Нет такого владельца"));
+        BankAccount transfetTo = bankAccountRepository.findById(idTo).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Нет такого владельца"));
 
         BigDecimal amount = requestTransferDTO.getAmount();
 
