@@ -1,5 +1,6 @@
 package ru.dmitrii.aston.banktransfersystemspring.Service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestTransferDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTransferDTO;
+import ru.dmitrii.aston.banktransfersystemspring.Event.TransferExistEvent;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
 import ru.dmitrii.aston.banktransfersystemspring.Model.Transaction;
 import ru.dmitrii.aston.banktransfersystemspring.Repository.BankAccountRepository;
@@ -26,11 +28,13 @@ public class BankAccountService {
     private final BankAccountRepository bankAccountRepository;
     private final TransactionRepository transactionRepository;
     private final AsyncTransferService asyncTransferService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public BankAccountService(BankAccountRepository bankAccountRepository, TransactionRepository transactionRepository, AsyncTransferService asyncTransferService) {
+    public BankAccountService(BankAccountRepository bankAccountRepository, TransactionRepository transactionRepository, AsyncTransferService asyncTransferService, ApplicationEventPublisher applicationEventPublisher) {
         this.bankAccountRepository = bankAccountRepository;
         this.transactionRepository = transactionRepository;
         this.asyncTransferService = asyncTransferService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
 
@@ -59,15 +63,14 @@ public class BankAccountService {
         int idFrom = requestTransferDTO.getFromAccount();
         int idTo = requestTransferDTO.getToAccount();
 
-//        BankAccount transferFrom = bankAccountRepository.findById(idFroom).orElse(null);
-//
-//        BankAccount transfetTo = bankAccountRepository.findById(idTo).orElse(null);
+        BankAccount transferFrom = bankAccountRepository.findById(idFrom).orElseThrow(() -> new IllegalArgumentException("Нет такого владельца"));
+        bankAccountRepository.findById(idTo).orElseThrow(() -> new IllegalArgumentException("Нет такого владельца"));
 
         BigDecimal amount = requestTransferDTO.getAmount();
 
-//        if (transferFrom.getBalance().compareTo(requestTransferDTO.getAmount()) < 0){
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Недостаточно средств");
-//        }
+        if (transferFrom.getBalance().compareTo(requestTransferDTO.getAmount()) < 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Недостаточно средств");
+        }
 
 //        transferFrom.setBalance(transferFrom.getBalance().subtract(amount));
 //        transfetTo.setBalance(transfetTo.getBalance().add(amount));
@@ -89,8 +92,11 @@ public class BankAccountService {
 //        transaction.setAmount(amount);
 //        transaction.setStatus("completed");
 
+
         Transaction save = transactionRepository.save(transaction);
-        asyncTransferService.asyncTransfer(save.getId());
+
+        applicationEventPublisher.publishEvent(new TransferExistEvent(save.getId()));
+        //asyncTransferService.asyncTransfer(save.getId());
 
         return new ResponseTransferDTO(save.getId(), save.getStatus());
     }
