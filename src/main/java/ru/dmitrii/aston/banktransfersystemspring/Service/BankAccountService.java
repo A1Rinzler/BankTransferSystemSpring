@@ -2,6 +2,7 @@ package ru.dmitrii.aston.banktransfersystemspring.Service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,13 +59,15 @@ public class BankAccountService {
         return bankAccountOptional.get().getBalance();
     }
 
+    @Async
     @Transactional
     public ResponseTransferDTO transfer(RequestTransferDTO requestTransferDTO){
         int idFrom = requestTransferDTO.getFromAccount();
         int idTo = requestTransferDTO.getToAccount();
+        String transferStatus = "completed";
 
         BankAccount transferFrom = bankAccountRepository.findById(idFrom).orElseThrow(() -> new IllegalArgumentException("Нет такого владельца"));
-        bankAccountRepository.findById(idTo).orElseThrow(() -> new IllegalArgumentException("Нет такого владельца"));
+        BankAccount transfetTo = bankAccountRepository.findById(idTo).orElseThrow(() -> new IllegalArgumentException("Нет такого владельца"));
 
         BigDecimal amount = requestTransferDTO.getAmount();
 
@@ -72,14 +75,14 @@ public class BankAccountService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Недостаточно средств");
         }
 
-//        transferFrom.setBalance(transferFrom.getBalance().subtract(amount));
-//        transfetTo.setBalance(transfetTo.getBalance().add(amount));
-//
+        transferFrom.setBalance(transferFrom.getBalance().subtract(amount));
+        transfetTo.setBalance(transfetTo.getBalance().add(amount));
+
 //        int fromId = transferFrom.getId();
 //        int toId = transfetTo.getId();
 
         //над наверно какой-то emum сделать и выставлять статус оттуда, сделать проверку или наф, реши утром.
-        String transferStatus = "completed";
+
 
         Transaction transaction = new Transaction(idFrom, idTo, amount, transferStatus);
 
@@ -95,7 +98,7 @@ public class BankAccountService {
 
         Transaction save = transactionRepository.save(transaction);
 
-        applicationEventPublisher.publishEvent(new TransferExistEvent(save.getId()));
+        //applicationEventPublisher.publishEvent(new TransferExistEvent(save.getId()));
         //asyncTransferService.asyncTransfer(save.getId());
 
         return new ResponseTransferDTO(save.getId(), save.getStatus());
