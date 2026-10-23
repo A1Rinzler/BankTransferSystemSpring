@@ -25,10 +25,12 @@ public class BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
     private final TransactionRepository transactionRepository;
+    private final AsyncTransferService asyncTransferService;
 
-    public BankAccountService(BankAccountRepository bankAccountRepository, TransactionRepository transactionRepository) {
+    public BankAccountService(BankAccountRepository bankAccountRepository, TransactionRepository transactionRepository, AsyncTransferService asyncTransferService) {
         this.bankAccountRepository = bankAccountRepository;
         this.transactionRepository = transactionRepository;
+        this.asyncTransferService = asyncTransferService;
     }
 
 
@@ -54,27 +56,29 @@ public class BankAccountService {
 
     @Transactional
     public ResponseTransferDTO transfer(RequestTransferDTO requestTransferDTO){
+        int idFrom = requestTransferDTO.getFromAccount();
+        int idTo = requestTransferDTO.getToAccount();
 
-        BankAccount transferFrom = bankAccountRepository.findById(requestTransferDTO.getFromAccount()).orElse(null);
-
-        BankAccount transfetTo = bankAccountRepository.findById(requestTransferDTO.getToAccount()).orElse(null);
+//        BankAccount transferFrom = bankAccountRepository.findById(idFroom).orElse(null);
+//
+//        BankAccount transfetTo = bankAccountRepository.findById(idTo).orElse(null);
 
         BigDecimal amount = requestTransferDTO.getAmount();
 
-        if (transferFrom.getBalance().compareTo(requestTransferDTO.getAmount()) < 0){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Недостаточно средств");
-        }
+//        if (transferFrom.getBalance().compareTo(requestTransferDTO.getAmount()) < 0){
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Недостаточно средств");
+//        }
 
-        transferFrom.setBalance(transferFrom.getBalance().subtract(amount));
-        transfetTo.setBalance(transfetTo.getBalance().add(amount));
-
-        int fromId = transferFrom.getId();
-        int toId = transfetTo.getId();
+//        transferFrom.setBalance(transferFrom.getBalance().subtract(amount));
+//        transfetTo.setBalance(transfetTo.getBalance().add(amount));
+//
+//        int fromId = transferFrom.getId();
+//        int toId = transfetTo.getId();
 
         //над наверно какой-то emum сделать и выставлять статус оттуда, сделать проверку или наф, реши утром.
         String transferStatus = "completed";
 
-        Transaction transaction = new Transaction(fromId, toId, amount,transferStatus);
+        Transaction transaction = new Transaction(idFrom, idTo, amount, transferStatus);
 
         //Transaction transaction1 = new Transaction(transferFrom.getId(), transfetTo.getId(), amount, "completed");
 
@@ -86,6 +90,7 @@ public class BankAccountService {
 //        transaction.setStatus("completed");
 
         Transaction save = transactionRepository.save(transaction);
+        asyncTransferService.asyncTransfer(save.getId());
 
         return new ResponseTransferDTO(save.getId(), save.getStatus());
     }
