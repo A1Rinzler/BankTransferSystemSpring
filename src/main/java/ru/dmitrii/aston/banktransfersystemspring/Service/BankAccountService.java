@@ -57,7 +57,8 @@ public class BankAccountService {
         Optional<BankAccount> bankAccountOptional = bankAccountRepository.findById(id);
         //todo над переделать возвращать статус с ошибкой, а не просто текст
         if (bankAccountOptional.isEmpty()){
-            throw new RuntimeException("Owner not found " + id);
+            //throw new RuntimeException("Owner not found " + id);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Нет такого владельца");
         }
         return bankAccountOptional.get().getBalance();
     }
