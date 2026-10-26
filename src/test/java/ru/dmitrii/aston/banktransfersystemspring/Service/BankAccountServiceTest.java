@@ -7,12 +7,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTranstactionDTO;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
 import ru.dmitrii.aston.banktransfersystemspring.Model.Transaction;
 import ru.dmitrii.aston.banktransfersystemspring.Repository.BankAccountRepository;
 import ru.dmitrii.aston.banktransfersystemspring.Repository.TransactionRepository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,9 +71,34 @@ class BankAccountServiceTest {
 
     @Test
     void getTransactionHistory() {
-        Transaction transaction = new Transaction(1, 2, new BigDecimal(200), "USD");
+        List<Transaction> transactionList = List.of(
+                new Transaction(1, 2, new BigDecimal(200), "completed"),
+                //new Transaction(1, 3, new BigDecimal(300), "USD"),
+                //new Transaction(1, 4, new BigDecimal(400), "USD"),
+                new Transaction(1, 5, new BigDecimal(500), "completed")
+        );
 
-        when(transactionRepository.findByFromAccount(1)).thenReturn(List.of(transaction));
+
+        when(transactionRepository.findByFromAccount(1)).thenReturn(transactionList);
+
+        List<ResponseTranstactionDTO> transactions = bankAccountService.getTransactionHistory(1);
+
+        ResponseTranstactionDTO responseTranstactionDTO1 = transactions.get(0);
+        ResponseTranstactionDTO responseTranstactionDTO2 = transactions.get(1);
+
+        assertEquals(0, responseTranstactionDTO1.getTransactionId()); //id транзакции в моем случае 0. не хочу сетер добавлять для теста.
+        assertEquals(1, responseTranstactionDTO1.getFromAccount());
+        assertEquals(2, responseTranstactionDTO1.getToAccount());
+        assertEquals(new BigDecimal(200), responseTranstactionDTO1.getAmount());
+        assertEquals(transactionList.get(0).getTimeStamp(), responseTranstactionDTO1.getTimeStamp());
+        assertEquals("completed", responseTranstactionDTO1.getStatus());
+
+        assertEquals(0, responseTranstactionDTO2.getTransactionId()); //id транзакции в моем случае 0. не хочу сетер добавлять для теста.
+        assertEquals(1, responseTranstactionDTO2.getFromAccount());
+        assertEquals(5, responseTranstactionDTO2.getToAccount());
+        assertEquals(new BigDecimal(500), responseTranstactionDTO2.getAmount());
+        assertEquals(transactionList.get(1).getTimeStamp(), responseTranstactionDTO2.getTimeStamp());
+        assertEquals("completed", responseTranstactionDTO2.getStatus());
 
 
 
