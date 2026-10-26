@@ -8,10 +8,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
+import ru.dmitrii.aston.banktransfersystemspring.Model.Transaction;
 import ru.dmitrii.aston.banktransfersystemspring.Repository.BankAccountRepository;
 import ru.dmitrii.aston.banktransfersystemspring.Repository.TransactionRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,5 +69,11 @@ class BankAccountServiceTest {
 
     @Test
     void getTransactionHistory() {
+        Transaction transaction = new Transaction(1, 2, new BigDecimal(200), "USD");
+
+        when(transactionRepository.findByFromAccount(1)).thenReturn(List.of(transaction));
+
+
+
     }
 }
