@@ -6,10 +6,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestTransferDTO;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTransferDTO;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTranstactionDTO;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.*;
 import ru.dmitrii.aston.banktransfersystemspring.Event.TransferExistEvent;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
 import ru.dmitrii.aston.banktransfersystemspring.Model.Transaction;
@@ -43,7 +40,7 @@ public class BankAccountService {
 
 
     @Transactional
-    public ResponseAccountDTO saveNewAccount(ResponseAccountDTO accountDTO){
+    public ResponseAccountDTO saveNewAccount(RequestAccountDTO accountDTO){
         BankAccount bankAccount = new BankAccount(accountDTO.getAccountHolder(), accountDTO.getCurrency());
 
         BankAccount bankAccountSaved = bankAccountRepository.save(bankAccount);

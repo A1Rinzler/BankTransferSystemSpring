@@ -34,8 +34,8 @@ public class BankTransferController {
     }
 
     @PostMapping("/accounts")
-    public ResponseAccountDTO createNewAccount(@RequestBody ResponseAccountDTO responseAccountDTO){
-        return  bankAccountService.saveNewAccount(responseAccountDTO);
+    public ResponseAccountDTO createNewAccount(@RequestBody RequestAccountDTO requestAccountDTO){
+        return  bankAccountService.saveNewAccount(requestAccountDTO);
     }
 
     @PostMapping("/transactions")
