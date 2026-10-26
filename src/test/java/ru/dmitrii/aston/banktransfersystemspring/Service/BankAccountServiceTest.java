@@ -33,16 +33,18 @@ class BankAccountServiceTest {
 
     @Test
     void saveNewAccount() {
-        BankAccount bankAccount = new BankAccount("Holder 1", "USD");
-        RequestAccountDTO responseAccountDTO = new RequestAccountDTO("Holder 1", "USD");
+        //BankAccount bankAccount = new BankAccount("Holder 1", "USD");
+        RequestAccountDTO requestAccountDTO = new RequestAccountDTO("Holder 1", "USD");
 
-        when (bankAccountRepository.save(any(BankAccount.class))).thenReturn(bankAccount);
-        ResponseAccountDTO responseAccountDTOCompare = bankAccountService.saveNewAccount(responseAccountDTO);
 
-        assertEquals(bankAccount.getId(), responseAccountDTOCompare.getId());
-        assertEquals(bankAccount.getAccountHolder(), responseAccountDTOCompare.getAccountHolder());
-        assertEquals(bankAccount.getBalance(), responseAccountDTOCompare.getBalance());
-        assertEquals(bankAccount.getCurrency(), responseAccountDTOCompare.getCurrency());
+        when (bankAccountRepository.save(any(BankAccount.class)))
+                .thenAnswer(returnMyRequestAccountDTO -> returnMyRequestAccountDTO.getArgument(0));
+        ResponseAccountDTO responseAccountDTOCompare = bankAccountService.saveNewAccount(requestAccountDTO);
+
+        assertEquals(0, responseAccountDTOCompare.getId()); //короче возвращаем тут 0, потому что id не инкрементируется в моке, надо руками как то передавать.
+        assertEquals("Holder 1", responseAccountDTOCompare.getAccountHolder());
+        assertEquals(new BigDecimal(0), responseAccountDTOCompare.getBalance());
+        assertEquals("USD", responseAccountDTOCompare.getCurrency());
     }
 
     @Test
