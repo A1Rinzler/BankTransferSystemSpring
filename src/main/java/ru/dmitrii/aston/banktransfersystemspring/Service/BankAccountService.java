@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestTransferDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
 import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTransferDTO;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTranstactionDTO;
 import ru.dmitrii.aston.banktransfersystemspring.Event.TransferExistEvent;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
 import ru.dmitrii.aston.banktransfersystemspring.Model.Transaction;
@@ -108,8 +109,11 @@ public class BankAccountService {
     }
 
     @Transactional
-    public List<Transaction> getTransactionHistory(int id){
-        return transactionRepository.findByFromAccount(id);
+    public List<ResponseTranstactionDTO> getTransactionHistory(int id){
+        List<Transaction> transactions = transactionRepository.findByFromAccount(id);
+        List<ResponseTranstactionDTO> responseTranstactionDTO = transactions.stream().map(transaction ->
+                new ResponseTranstactionDTO(transaction.getId(), transaction.getFromAccount(), transaction.getToAccount(), transaction.getAmount(), transaction.getTimeStamp(), transaction.getStatus())).toList();
+        return responseTranstactionDTO;
     }
 
 

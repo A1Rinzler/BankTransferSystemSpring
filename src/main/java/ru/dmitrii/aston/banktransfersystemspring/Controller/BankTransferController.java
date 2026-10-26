@@ -3,10 +3,7 @@ package ru.dmitrii.aston.banktransfersystemspring.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestTransferDTO;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseBalanceDTO;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTransferDTO;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.*;
 import ru.dmitrii.aston.banktransfersystemspring.Model.Transaction;
 import ru.dmitrii.aston.banktransfersystemspring.Service.BankAccountService;
 
@@ -48,7 +45,7 @@ public class BankTransferController {
     }
 
     @GetMapping("/transactions/{id}")
-    public List<Transaction> getHistory(@PathVariable int id){
+    public List<ResponseTranstactionDTO> getHistory(@PathVariable int id){
         return bankAccountService.getTransactionHistory(id);
     }
 
