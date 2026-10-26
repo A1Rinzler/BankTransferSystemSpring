@@ -112,7 +112,21 @@ class BankAccountServiceTest {
 
     @Test
     void transfer() {
+        BankAccount from = new BankAccount("Holder1", "USD");
+        from.setBalance(new BigDecimal(200));
 
+        BankAccount to = new BankAccount("Holder2", "USD");
+
+        RequestTransferDTO requestTransferDTO = new RequestTransferDTO(1, 2 , new BigDecimal(200));
+
+        when(bankAccountRepository.findById(1)).thenReturn(Optional.of(from));
+        when(bankAccountRepository.findById(2)).thenReturn(Optional.of(to));
+
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        bankAccountService.transfer(requestTransferDTO);
+
+        verify(transactionRepository).save(any(Transaction.class));
     }
 
     @Test
