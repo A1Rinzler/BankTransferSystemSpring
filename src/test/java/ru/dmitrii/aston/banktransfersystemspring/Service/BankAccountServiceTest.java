@@ -12,6 +12,7 @@ import ru.dmitrii.aston.banktransfersystemspring.Repository.BankAccountRepositor
 import ru.dmitrii.aston.banktransfersystemspring.Repository.TransactionRepository;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,6 +50,15 @@ class BankAccountServiceTest {
 
     @Test
     void getOwnerBalance() {
+
+        BankAccount bankAccount = new BankAccount("Holder 1", "USD");
+        bankAccount.setBalance(new BigDecimal(200));
+
+        when(bankAccountRepository.findById(1)).thenReturn(Optional.of(bankAccount));
+
+        BigDecimal balance = bankAccountService.getOwnerBalance(1);
+
+        assertEquals(new BigDecimal(200), balance);
     }
 
     @Test
