@@ -5,9 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.RequestAccountDTO;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseAccountDTO;
-import ru.dmitrii.aston.banktransfersystemspring.DTO.ResponseTranstactionDTO;
+import org.springframework.web.server.ResponseStatusException;
+import ru.dmitrii.aston.banktransfersystemspring.DTO.*;
 import ru.dmitrii.aston.banktransfersystemspring.Model.BankAccount;
 import ru.dmitrii.aston.banktransfersystemspring.Model.Transaction;
 import ru.dmitrii.aston.banktransfersystemspring.Repository.BankAccountRepository;
@@ -17,9 +16,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -65,8 +66,53 @@ class BankAccountServiceTest {
         assertEquals(new BigDecimal(200), balance);
     }
 
+//    @Test
+//    void notEnoughMoney() {
+//
+//        BankAccount from = new BankAccount("Holder1", "USD");
+//        from.setBalance(new BigDecimal(100));
+//
+//        BankAccount to = new BankAccount("Holder2", "USD");
+//
+//        RequestTransferDTO requestTransferDTO = new RequestTransferDTO(1, 2 , new BigDecimal(200));
+//
+//        when(bankAccountRepository.findById(1)).thenReturn(Optional.of(from));
+//        when(bankAccountRepository.findById(2)).thenReturn(Optional.of(to));
+//
+//        // responseTranstactionDTO = bankAccountService.transfer(requestTransferDTO);
+//        ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () -> bankAccountService.transfer(requestTransferDTO)); //если вылетает исключение, значит поймали эксепшен
+//
+//        assertEquals("Недостаточно средств", responseStatusException.getReason());
+//
+//    }
+
+    @Test
+    void isEnoughMoney() {
+
+        BankAccount from = new BankAccount("Holder1", "USD");
+        from.setBalance(new BigDecimal(200));
+
+        BankAccount to = new BankAccount("Holder2", "USD");
+
+        RequestTransferDTO requestTransferDTO = new RequestTransferDTO(1, 2 , new BigDecimal(200));
+
+        when(bankAccountRepository.findById(1)).thenReturn(Optional.of(from));
+        when(bankAccountRepository.findById(2)).thenReturn(Optional.of(to));
+
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertDoesNotThrow(() -> bankAccountService.transfer(requestTransferDTO)); //так, если не будет никакого исключения, то денег хватает. Отдельно ловит так се.
+
+        // responseTranstactionDTO = bankAccountService.transfer(requestTransferDTO);
+        //ResponseStatusException responseStatusException = assertThrows(ResponseStatusException.class, () -> bankAccountService.transfer(requestTransferDTO)); //если вылетает исключение, значит поймали эксепшен
+
+        //assertNotEquals("Недостаточно средств", responseStatusException.getReason());
+        //assertDoesNotThrow(() -> bankAccountService.transfer(requestTransferDTO));
+    }
+
     @Test
     void transfer() {
+
     }
 
     @Test
